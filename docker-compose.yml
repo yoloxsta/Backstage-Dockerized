@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: backstage-postgres
+    environment:
+      POSTGRES_USER: backstage
+      POSTGRES_PASSWORD: backstage
+      POSTGRES_DB: backstage
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U backstage"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backstage-network
+
+  # Backstage Application
+  backstage:
+    image: backstage:latest
+    container_name: backstage
+    environment:
+      - NODE_ENV=production
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=backstage
+      - POSTGRES_PASSWORD=backstage
+      - BACKEND_SECRET=backstage-secret-key-change-in-production
+      - LOG_LEVEL=debug
+    ports:
+      - "7007:7007"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - backstage-network
+
+volumes:
+  postgres-data:
+
+networks:
+  backstage-network:
+    driver: bridge

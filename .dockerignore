@@ -1,8 +1,12 @@
 .git
 .yarn/cache
 .yarn/install-state.gz
+.node_modules
 node_modules
-packages/*/src
-packages/*/node_modules
-plugins
-*.local.yaml
+dist
+*.tsbuildinfo
+.env.local
+.env.*.local
+
+# Remove or comment out node_modules to allow Docker to copy it
+# node_modules
