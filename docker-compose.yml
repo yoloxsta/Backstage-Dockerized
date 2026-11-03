@@ -33,6 +33,7 @@ services:
       - POSTGRES_PASSWORD=backstage
       - BACKEND_SECRET=backstage-secret-key-change-in-production
       - LOG_LEVEL=debug
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
     ports:
       - "7007:7007"
     depends_on:

@@ -1,0 +1,17 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-dockerized
+  description: Backstage IDP Lab - A dockerized Backstage instance for learning
+  tags:
+    - backstage
+    - idp
+    - docker
+  annotations:
+    github.com/project-slug: yoloxsta/Backstage-Dockerized
+    backstage.io/techdocs-ref: dir:.
+spec:
+  type: service
+  lifecycle: experimental
+  owner: guests
+  system: examples
