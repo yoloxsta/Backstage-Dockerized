@@ -19,13 +19,15 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3 make g++
 
       - name: Install dependencies
         run: yarn install --immutable
+        env:
+          YARN_ENABLE_SCRIPTS: false
 
       - name: Build backend
         run: yarn build:backend
