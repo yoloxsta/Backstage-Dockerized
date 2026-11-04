@@ -34,6 +34,8 @@ services:
       - BACKEND_SECRET=backstage-secret-key-change-in-production
       - LOG_LEVEL=debug
       - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
+      - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
     ports:
       - "7007:7007"
     depends_on:
