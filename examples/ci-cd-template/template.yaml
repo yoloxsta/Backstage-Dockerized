@@ -1,0 +1,123 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: ci-cd-service
+  title: Service with CI/CD Pipeline
+  description: Create a new service with GitHub Actions CI/CD pipeline
+  tags:
+    - recommended
+    - ci-cd
+    - github-actions
+spec:
+  owner: guests
+  type: service
+
+  parameters:
+    - title: Service Details
+      required:
+        - name
+        - owner
+      properties:
+        name:
+          title: Service Name
+          type: string
+          description: Unique name of the service
+          ui:field: EntityNamePicker
+          ui:autofocus: true
+        description:
+          title: Description
+          type: string
+          description: Help others understand what this service does
+        owner:
+          title: Owner
+          type: string
+          ui:field: OwnerPicker
+          ui:options:
+            allowedKinds:
+              - Group
+        language:
+          title: Programming Language
+          type: string
+          description: Choose the primary language
+          default: nodejs
+          enum:
+            - nodejs
+            - python
+            - go
+          enumUi:
+            - label: Node.js
+              value: nodejs
+            - label: Python
+              value: python
+            - label: Go
+              value: go
+
+    - title: Repository Details
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository URL
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+        visibility:
+          title: Repository Visibility
+          type: string
+          default: public
+          enum:
+            - public
+            - private
+
+    - title: CI/CD Options
+      properties:
+        enableDocker:
+          title: Enable Docker Build
+          type: boolean
+          default: true
+          description: Include Dockerfile and Docker build in CI
+        enableKubernetes:
+          title: Enable Kubernetes Deployment
+          type: boolean
+          default: false
+          description: Include Kubernetes manifests
+
+  steps:
+    - id: template
+      name: Generate Service
+      action: fetch:template
+      input:
+        url: ./content
+        values:
+          name: ${{ parameters.name }}
+          description: ${{ parameters.description }}
+          owner: ${{ parameters.owner }}
+          language: ${{ parameters.language }}
+          enableDocker: ${{ parameters.enableDocker }}
+          enableKubernetes: ${{ parameters.enableKubernetes }}
+
+    - id: publish
+      name: Publish to GitHub
+      action: publish:github
+      input:
+        allowedHosts: ['github.com']
+        description: ${{ parameters.description }}
+        repoUrl: ${{ parameters.repoUrl }}
+        visibility: ${{ parameters.visibility }}
+        defaultBranch: main
+
+    - id: register
+      name: Register in Catalog
+      action: catalog:register
+      input:
+        catalogInfoUrl: https://github.com/${{ steps.publish.output.repoContentsPath }}/blob/main/catalog-info.yaml
+
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps.publish.output.remoteUrl }}
+      - title: Open in Catalog
+        icon: catalog
+        entityRef: ${{ steps.register.output.entityRef }}

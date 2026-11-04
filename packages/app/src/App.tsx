@@ -4,5 +4,11 @@ import { navModule } from './modules/nav';
 import { homeModule } from './modules/home';
 
 export default createApp({
-  features: [catalogPlugin, navModule, homeModule],
+  features: [
+    catalogPlugin,
+    navModule,
+    homeModule,
+    // GitHub Actions CI/CD integration
+    import('@backstage/plugin-github-actions'),
+  ],
 });

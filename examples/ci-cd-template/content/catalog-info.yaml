@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{ values.name | lower }}
+  description: ${{ values.description }}
+  annotations:
+    github.com/project-slug: ${{ values.repoUrl | parseRepoUrl }}
+    backstage.io/techdocs-ref: dir:.
+  tags:
+    - ${{ values.language }}
+spec:
+  type: service
+  lifecycle: experimental
+  owner: ${{ values.owner }}
